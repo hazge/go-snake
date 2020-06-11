@@ -23,17 +23,17 @@ type Cursor struct {
 }
 
 func New() Cursor {
-	c := Cursor{Position: Position{1, 1}}
+	c := Cursor{Position: Position{0, 0}}
 	c.MoveTo(0, 0)
 	return c
 }
 func (c *Cursor) Draw(text string) {
 	fmt.Print(text)
-	c.Position.Y += uint16(len(text))
+	c.Position.X += uint16(len(text))
 }
 
 func (c *Cursor) DrawAndBack(text string) {
-	fmt.Print(text)
+	c.Draw(text)
 	c.MoveLeft()
 }
 
@@ -41,8 +41,8 @@ func runCommand(command string) {
 	fmt.Print(ESC + command)
 }
 
-func (c *Cursor) MoveTo(row, column int) {
-	runCommand(fmt.Sprintf("[%d;%df", row, column))
+func (c *Cursor) MoveTo(x, y uint16) {
+	runCommand(fmt.Sprintf("[%d;%df", x, y))
 }
 
 func (c *Cursor) MoveUp() {

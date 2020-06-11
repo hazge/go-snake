@@ -16,16 +16,13 @@ const (
 )
 
 type Board struct {
-	Rows  uint16
-	Lines uint16
-	Cur   cursor.Cursor
+	YLength uint16
+	XLength uint16
+	Cur     cursor.Cursor
 }
 
 func New() Board {
 	w, h := getTerminalSize()
-	//if w == 0 || h == 0 {
-	//	log.Fatal("terminal empty")
-	//}
 	b := Board{w, h, cursor.New()}
 	b.CleanBoard()
 	return b
@@ -54,16 +51,26 @@ func getTerminalSize() (uint16, uint16) {
 	return uint16(w), uint16(h)
 }
 func (b *Board) DrawBorder() {
+	runCommand("[42m")
 	// left border
-	for b.Cur.Position.Y < b.Rows {
-		b.Cur.DrawAndBack("x")
+	for b.Cur.Position.Y < b.YLength {
+		b.Cur.DrawAndBack(" ")
 		b.Cur.MoveDown()
 	}
-	for b.Cur.Position.X < b.Rows {
-		b.Cur.DrawAndBack("x")
+
+	for b.Cur.Position.X < b.XLength {
+		b.Cur.DrawAndBack(" ")
 		b.Cur.MoveRight()
 	}
-
+	for b.Cur.Position.Y > 0 {
+		b.Cur.DrawAndBack(" ")
+		b.Cur.MoveUp()
+	}
+	for b.Cur.Position.X > 0 {
+		b.Cur.DrawAndBack(" ")
+		b.Cur.MoveLeft()
+	}
+	runCommand("[0m")
 }
 
 func runCommand(command string) {
