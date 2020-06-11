@@ -15,21 +15,21 @@ const (
 )
 
 type Position struct {
-	X int
-	Y int
+	X uint16
+	Y uint16
 }
 type Cursor struct {
-	position Position
+	Position Position
 }
 
 func New() Cursor {
-	c := Cursor{position: Position{1, 1}}
+	c := Cursor{Position: Position{1, 1}}
 	c.MoveTo(0, 0)
 	return c
 }
 func (c *Cursor) Draw(text string) {
 	fmt.Print(text)
-	c.position.Y += len(text)
+	c.Position.Y += uint16(len(text))
 }
 
 func (c *Cursor) DrawAndBack(text string) {
@@ -47,22 +47,22 @@ func (c *Cursor) MoveTo(row, column int) {
 
 func (c *Cursor) MoveUp() {
 	runCommand(fmt.Sprintf("[A"))
-	c.position.X -= 1
+	c.Position.Y -= 1
 
 }
 
 func (c *Cursor) MoveDown() {
 	runCommand(fmt.Sprintf("[B"))
-	c.position.X += 1
+	c.Position.Y += 1
 }
 
 func (c *Cursor) MoveLeft() {
 	runCommand(fmt.Sprintf("[D"))
-	c.position.Y -= 1
+	c.Position.X -= 1
 
 }
 
 func (c *Cursor) MoveRight() {
 	runCommand(fmt.Sprintf("[C"))
-	c.position.Y += 1
+	c.Position.X += 1
 }

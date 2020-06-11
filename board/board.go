@@ -2,9 +2,12 @@ package board
 
 import (
 	"fmt"
-	"golang.org/x/crypto/ssh/terminal"
-	"maze/cursor"
+	"github.com/hazge/snake/cursor"
+	"log"
 	"os"
+	"os/exec"
+	"strconv"
+	"strings"
 )
 
 const (
@@ -13,25 +16,54 @@ const (
 )
 
 type Board struct {
-	Rows  int
-	Lines int
-	C     cursor.Cursor
+	Rows  uint16
+	Lines uint16
+	Cur   cursor.Cursor
 }
 
 func New() Board {
-	w, h, err := terminal.GetSize(int(os.Stdout.Fd()))
-	if err != nil {
-		panic("can't access terminal.")
-	}
+	w, h := getTerminalSize()
+	//if w == 0 || h == 0 {
+	//	log.Fatal("terminal empty")
+	//}
 	b := Board{w, h, cursor.New()}
 	b.CleanBoard()
 	return b
 
 }
-func (b *Board) DrawBorder() {
-	for y := 1; y <= b.Rows; y++ {
-		b.C.Draw("y")
+
+func getTerminalSize() (uint16, uint16) {
+	cmd := exec.Command("stty", "size")
+	cmd.Stdin = os.Stdin
+	out, err := cmd.Output()
+	if err != nil {
+		log.Fatal(err)
 	}
+	size := strings.Split(string(out), " ")
+	w, err := strconv.ParseInt(size[0], 10, 32)
+	if err != nil {
+		log.Fatal(err)
+	}
+	h, err := strconv.ParseInt(strings.TrimRight(size[1], "\n"), 10, 32)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if w <= 0 || h <= 0 {
+		panic("empty terminal")
+	}
+	return uint16(w), uint16(h)
+}
+func (b *Board) DrawBorder() {
+	// left border
+	for b.Cur.Position.Y < b.Rows {
+		b.Cur.DrawAndBack("x")
+		b.Cur.MoveDown()
+	}
+	for b.Cur.Position.X < b.Rows {
+		b.Cur.DrawAndBack("x")
+		b.Cur.MoveRight()
+	}
+
 }
 
 func runCommand(command string) {
