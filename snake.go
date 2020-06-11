@@ -7,10 +7,10 @@ import (
 
 func main() {
 	time.Sleep(1 * time.Second)
-	b := board.New()
-	b.DrawBorder()
+	brd := board.New()
+	brd.DrawBorder()
 	time.Sleep(3 * time.Second)
 	defer func() {
-		b.Cur.MoveTo(b.YLength, 0)
+		brd.Cursor.MoveTo(brd.YLength, 0)
 	}()
 }

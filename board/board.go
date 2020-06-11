@@ -3,6 +3,7 @@ package board
 import (
 	"github.com/hazge/snake/cursor"
 	"github.com/hazge/snake/gu"
+	"github.com/hazge/snake/snake"
 	"log"
 	"os"
 	"os/exec"
@@ -13,12 +14,13 @@ import (
 type Board struct {
 	YLength uint16
 	XLength uint16
-	Cur     cursor.Cursor
+	Cursor  cursor.Cursor
+	Snake   snake.Snake
 }
 
 func New() Board {
 	w, h := getTerminalSize()
-	b := Board{w, h, cursor.New()}
+	b := Board{w, h, cursor.New(), snake.New(w, h)}
 	b.CleanBoard()
 	return b
 
