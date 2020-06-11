@@ -1,29 +1,16 @@
 package cursor
 
-import "fmt"
-
-const (
-	ESC           = "\033"
-	MOVE_TOP_LEFT = "[H"
-	CLEAR         = "[2J"
-)
-const (
-	tN = iota
-	tW
-	tS
-	tE
+import (
+	"fmt"
+	"github.com/hazge/snake/gu"
 )
 
-type Position struct {
-	X uint16
-	Y uint16
-}
 type Cursor struct {
-	Position Position
+	Position gu.Position
 }
 
 func New() Cursor {
-	c := Cursor{Position: Position{0, 0}}
+	c := Cursor{Position: gu.Position{}}
 	c.MoveTo(0, 0)
 	return c
 }
@@ -37,32 +24,28 @@ func (c *Cursor) DrawAndBack(text string) {
 	c.MoveLeft()
 }
 
-func runCommand(command string) {
-	fmt.Print(ESC + command)
-}
-
 func (c *Cursor) MoveTo(x, y uint16) {
-	runCommand(fmt.Sprintf("[%d;%df", x, y))
+	gu.RunCommand(fmt.Sprintf("[%d;%df", x, y))
 }
 
 func (c *Cursor) MoveUp() {
-	runCommand(fmt.Sprintf("[A"))
+	gu.RunCommand("[A")
 	c.Position.Y -= 1
 
 }
 
 func (c *Cursor) MoveDown() {
-	runCommand(fmt.Sprintf("[B"))
+	gu.RunCommand("[B")
 	c.Position.Y += 1
 }
 
 func (c *Cursor) MoveLeft() {
-	runCommand(fmt.Sprintf("[D"))
+	gu.RunCommand("[D")
 	c.Position.X -= 1
 
 }
 
 func (c *Cursor) MoveRight() {
-	runCommand(fmt.Sprintf("[C"))
+	gu.RunCommand("[C")
 	c.Position.X += 1
 }

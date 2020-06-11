@@ -1,18 +1,13 @@
 package board
 
 import (
-	"fmt"
 	"github.com/hazge/snake/cursor"
+	"github.com/hazge/snake/gu"
 	"log"
 	"os"
 	"os/exec"
 	"strconv"
 	"strings"
-)
-
-const (
-	ESC   = "\033"
-	CLEAR = "[2J"
 )
 
 type Board struct {
@@ -51,7 +46,7 @@ func getTerminalSize() (uint16, uint16) {
 	return uint16(w), uint16(h)
 }
 func (b *Board) DrawBorder() {
-	runCommand("[42m")
+	gu.RunCommand("[42m")
 	// left border
 	for b.Cur.Position.Y < b.YLength {
 		b.Cur.DrawAndBack(" ")
@@ -70,12 +65,9 @@ func (b *Board) DrawBorder() {
 		b.Cur.DrawAndBack(" ")
 		b.Cur.MoveLeft()
 	}
-	runCommand("[0m")
+	gu.RunCommand("[0m")
 }
 
-func runCommand(command string) {
-	fmt.Print(ESC + command)
-}
 func (b *Board) CleanBoard() {
-	runCommand(CLEAR)
+	gu.RunCommand("[2J")
 }
