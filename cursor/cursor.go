@@ -2,7 +2,7 @@ package cursor
 
 import (
 	"fmt"
-	"github.com/hazge/snake/gu"
+	"github.com/hazge/go-snake/gu"
 )
 
 type Cursor struct {
@@ -11,7 +11,7 @@ type Cursor struct {
 
 func New() Cursor {
 	c := Cursor{Position: gu.Position{}}
-	c.MoveTo(0, 0)
+	c.MoveTo(gu.Position{})
 	return c
 }
 func (c *Cursor) Draw(text string) {
@@ -24,28 +24,28 @@ func (c *Cursor) DrawAndBack(text string) {
 	c.MoveLeft()
 }
 
-func (c *Cursor) MoveTo(x, y uint16) {
-	gu.RunCommand(fmt.Sprintf("[%d;%df", x, y))
+func (c *Cursor) MoveTo(p gu.Position) {
+	gu.RunCommand(fmt.Sprintf("[%d;%df", p.X, p.Y))
 }
 
 func (c *Cursor) MoveUp() {
-	gu.RunCommand("[A")
+	gu.RunCommand(gu.UP)
 	c.Position.Y -= 1
 
 }
 
 func (c *Cursor) MoveDown() {
-	gu.RunCommand("[B")
+	gu.RunCommand(gu.DOWN)
 	c.Position.Y += 1
 }
 
 func (c *Cursor) MoveLeft() {
-	gu.RunCommand("[D")
+	gu.RunCommand(gu.LEFT)
 	c.Position.X -= 1
 
 }
 
 func (c *Cursor) MoveRight() {
-	gu.RunCommand("[C")
+	gu.RunCommand(gu.RIGHT)
 	c.Position.X += 1
 }

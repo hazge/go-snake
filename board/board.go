@@ -1,9 +1,9 @@
 package board
 
 import (
-	"github.com/hazge/snake/cursor"
-	"github.com/hazge/snake/gu"
-	"github.com/hazge/snake/snake"
+	"github.com/hazge/go-snake/cursor"
+	"github.com/hazge/go-snake/gu"
+	"github.com/hazge/go-snake/snake"
 	"log"
 	"os"
 	"os/exec"
@@ -16,11 +16,12 @@ type Board struct {
 	XLength uint16
 	Cursor  cursor.Cursor
 	Snake   snake.Snake
+	y       string
 }
 
 func New() Board {
 	w, h := getTerminalSize()
-	b := Board{w, h, cursor.New(), snake.New(w, h)}
+	b := Board{w, h, cursor.New(), snake.New(w, h), "a"}
 	b.CleanBoard()
 	return b
 
@@ -50,26 +51,48 @@ func getTerminalSize() (uint16, uint16) {
 func (b *Board) DrawBorder() {
 	gu.RunCommand("[42m")
 	// left border
-	for b.Cur.Position.Y < b.YLength {
-		b.Cur.DrawAndBack(" ")
-		b.Cur.MoveDown()
+	for b.Cursor.Position.Y < b.YLength {
+		b.Cursor.DrawAndBack(" ")
+		b.Cursor.MoveDown()
 	}
 
-	for b.Cur.Position.X < b.XLength {
-		b.Cur.DrawAndBack(" ")
-		b.Cur.MoveRight()
+	for b.Cursor.Position.X < b.XLength {
+		b.Cursor.DrawAndBack(" ")
+		b.Cursor.MoveRight()
 	}
-	for b.Cur.Position.Y > 0 {
-		b.Cur.DrawAndBack(" ")
-		b.Cur.MoveUp()
+	for b.Cursor.Position.Y > 0 {
+		b.Cursor.DrawAndBack(" ")
+		b.Cursor.MoveUp()
 	}
-	for b.Cur.Position.X > 0 {
-		b.Cur.DrawAndBack(" ")
-		b.Cur.MoveLeft()
+	for b.Cursor.Position.X > 0 {
+		b.Cursor.DrawAndBack(" ")
+		b.Cursor.MoveLeft()
 	}
 	gu.RunCommand("[0m")
 }
 
 func (b *Board) CleanBoard() {
 	gu.RunCommand("[2J")
+}
+
+func (b *Board) MoveSnake() {
+	for i := 0; i < len(b.Snake.Body); i++ {
+		oldPosition := b.Snake.Body[i]
+		b.Cursor.MoveTo(oldPosition)
+		b.Cursor.Draw(" ")
+		var newPosition gu.Position
+		switch b.Snake.Direction {
+		case gu.UP:
+			newPosition = gu.Position{X: oldPosition.X, Y: oldPosition.Y - 1}
+		case gu.DOWN:
+			newPosition = gu.Position{X: oldPosition.X, Y: oldPosition.Y + 1}
+		case gu.LEFT:
+			newPosition = gu.Position{X: oldPosition.X - 1, Y: oldPosition.Y}
+		case gu.RIGHT:
+			newPosition = gu.Position{X: oldPosition.X + 1, Y: oldPosition.Y}
+
+		}
+		b.Cursor.MoveTo(newPosition)
+		b.Cursor.Draw(b.Snake.Pic)
+	}
 }

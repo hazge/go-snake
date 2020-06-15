@@ -11,3 +11,10 @@ const (
 func RunCommand(command string) {
 	fmt.Print(ESC + command)
 }
+
+const (
+	UP    = "[A"
+	DOWN  = "[B"
+	RIGHT = "[C"
+	LEFT  = "[D"
+)
